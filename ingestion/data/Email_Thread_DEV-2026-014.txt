@@ -1,0 +1,92 @@
+====================================================================
+SYNTHETIC DEMO DOCUMENT -- GENERATED FOR HACKATHON PROTOTYPE TESTING
+NOT A REAL EMAIL / NOT A REAL COMPANY
+====================================================================
+Exported thread: "OOS Alert - Batch MP-PCM-2602 Compression Stage"
+Mailbox: quality@meridianpharma-demo.local (fictional domain)
+
+--------------------------------------------------------------------
+From: Priya Nair <priya.nair@meridianpharma-demo.local>
+To: Anita Verma <anita.verma@meridianpharma-demo.local>
+Cc: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>
+Date: 14-Jan-2026 12:47
+Subject: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required
+
+Anita,
+
+Flagging an OOS at the compression stage for Batch MP-PCM-2602 (Paracetamol
+Tablets IP 500 mg). Average weight came back at 579 mg against spec of 550 mg
++/-5%, and 4 of 20 tablets in the weight-variation sample are outside the
++/-7.5% individual limit.
+
+I've stopped compression and quarantined the in-process bulk. Raising this as
+a deviation now - reference will be DEV-2026-014.
+
+Rakesh, can Engineering take a look at TCM-04? This looks like it could be a
+tooling issue rather than a formulation one, since granulation IPQC was clean.
+
+- Priya
+
+--------------------------------------------------------------------
+From: Anita Verma <anita.verma@meridianpharma-demo.local>
+To: Priya Nair <priya.nair@meridianpharma-demo.local>
+Cc: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Sunil Mehta <sunil.mehta@meridianpharma-demo.local>
+Date: 14-Jan-2026 13:15
+Subject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required
+
+Good catch, Priya. Confirmed batch is on hold in the system under DEV-2026-014.
+
+Dr. Mehta - looping you in per SOP-QA-014 since this is a Major classification
+(weight variation OOS, in-process rejection risk). Investigation to follow the
+standard root-cause format; I'll need Engineering's PM/calibration log for
+TCM-04 as part of the investigation pack.
+
+Rakesh - please have Engineering pull the last PM record for TCM-04 by end of
+day and check current punch condition.
+
+- Anita
+
+--------------------------------------------------------------------
+From: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>
+To: Anita Verma <anita.verma@meridianpharma-demo.local>
+Cc: Priya Nair <priya.nair@meridianpharma-demo.local>
+Date: 14-Jan-2026 16:02
+Subject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required
+
+Update from Engineering: TCM-04's preventive maintenance and punch inspection
+was due 12 days ago and wasn't done - looks like it slipped through over the
+holiday schedule. Punches show visible wear on inspection.
+
+That's likely our root cause. I've pulled the machine off the schedule and
+Engineering is inspecting/replacing tooling now. I'm also raising a separate
+deviation for the missed PM (DEV-2026-015) since that's a system gap on our
+side, not just a machine fault.
+
+- Rakesh
+
+--------------------------------------------------------------------
+From: Sunil Mehta <sunil.mehta@meridianpharma-demo.local>
+To: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Anita Verma <anita.verma@meridianpharma-demo.local>
+Cc: Priya Nair <priya.nair@meridianpharma-demo.local>
+Date: 15-Jan-2026 09:30
+Subject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required
+
+Agreed on treating the missed PM as a linked but separate deviation
+(DEV-2026-015) - the punch wear is the immediate cause, the scheduling gap is
+the systemic one, and both need their own CAPA.
+
+Approving CAPA-2026-011 (punch replacement + revised PM frequency for TCM-04)
+and CAPA-2026-012 (automated PM/calibration due-date alerting). Please route
+both through Quality Council for sign-off this week.
+
+Priya - please confirm the affected sub-lot of MP-PCM-2602 is clearly
+segregated so we don't risk any cross-contamination with the conforming
+sub-lot pending final disposition.
+
+- Dr. Sunil Mehta
+Quality Head
+====================================================================
+End of thread. Confidential - synthetic training data generated for AI
+hackathon prototype. Not associated with any real drug product, company,
+or individual.
+====================================================================
