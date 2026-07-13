@@ -1,0 +1,98 @@
+[
+  {
+    "id": "BMR_MP-PCM-2601.pdf::chunk0",
+    "source_file": "BMR_MP-PCM-2601.pdf",
+    "doc_type": "pdf",
+    "text": "Batch Manufacturing Record - Batch MP-PCM-2601 Product: Paracetamol Tablets 500mg. Batch Number: MP-PCM-2601. Manufacturing Date: 2026-02-10. Compression Machine: TCM-02. Operator of Record: Suresh Iyer. Shift Supervisor: Rajesh Kumar. In-process quality check performed at 10:15 AM on 2026-02-10. Average tablet weight recorded at 591mg, within the specification range of 580-600mg. Batch MP-PCM-2601 PASSED all in-process checks and was released to packaging."
+  },
+  {
+    "id": "BMR_MP-PCM-2601.pdf::chunk1",
+    "source_file": "BMR_MP-PCM-2601.pdf",
+    "doc_type": "pdf",
+    "text": "No deviations were raised for this batch. Machine TCM-02 had completed its scheduled preventive maintenance on 2026-01-28 per SOP ENG-007."
+  },
+  {
+    "id": "BMR_MP-PCM-2602.pdf::chunk0",
+    "source_file": "BMR_MP-PCM-2602.pdf",
+    "doc_type": "pdf",
+    "text": "Batch Manufacturing Record - Batch MP-PCM-2602 Product: Paracetamol Tablets 500mg. Batch Number: MP-PCM-2602. Manufacturing Date: 2026-02-14. Compression Machine: TCM-04. Operator of Record: Priya Nair. Shift Supervisor: Rajesh Kumar. In-process quality check performed at 11:40 AM on 2026-02-14 by operator Priya Nair. Tablet weight check failed: average tablet weight recorded at 612mg against a specification range of 580-600mg. Batch MP-PCM-2602 was placed on HOLD pending investigation."
+  },
+  {
+    "id": "BMR_MP-PCM-2602.pdf::chunk1",
+    "source_file": "BMR_MP-PCM-2602.pdf",
+    "doc_type": "pdf",
+    "text": "Deviation was immediately raised and logged as DEV-2602-001. Machine TCM-04 was taken offline for inspection following the failed weight check. Reference SOP: ENG-007 (Preventive Maintenance of Tablet Compression Machines). Reference Deviation Report: DEV-2602-001."
+  },
+  {
+    "id": "Deviation_Report_DEV-2602-001.pdf::chunk0",
+    "source_file": "Deviation_Report_DEV-2602-001.pdf",
+    "doc_type": "pdf",
+    "text": "Deviation Report DEV-2602-001 Deviation Number: DEV-2602-001. Related Batch: MP-PCM-2602. Date Raised: 2026-02-14. Raised By: Priya Nair. Category: In-process quality check failure - tablet weight out of specification. Description: During routine in-process weight verification, tablets produced on Machine TCM-04 were found to average 612mg, exceeding the upper specification limit of 600mg. Operator Priya Nair immediately halted the compression run and notified Shift Supervisor Rajesh Kumar."
+  },
+  {
+    "id": "Deviation_Report_DEV-2602-001.pdf::chunk1",
+    "source_file": "Deviation_Report_DEV-2602-001.pdf",
+    "doc_type": "pdf",
+    "text": "Root Cause Investigation: Maintenance Engineer Anita Desai inspected Machine TCM-04 on 2026-02-15 and identified a worn punch tip in station 6 of the upper punch set, along with visible degraded punch tooling causing inconsistent fill depth. Wear and tear on the punch assembly beyond acceptable tolerance was confirmed as the direct root cause. Underlying Cause: Cross-reference with the Machine TCM-04 maintenance history showed that the"
+  },
+  {
+    "id": "Deviation_Report_DEV-2602-001.pdf::chunk2",
+    "source_file": "Deviation_Report_DEV-2602-001.pdf",
+    "doc_type": "pdf",
+    "text": "scheduled preventive maintenance checkup mandated by SOP ENG-007 (due 2026-01-30) had been missed. The maintenance team, led by Suresh Iyer, had not performed the punch inspection and replacement cycle required at the 90-day interval. Corrective and Preventive Action (CAPA): Replace worn punch tooling on TCM-04. Reinforce scheduling compliance for SOP ENG-007 across all compression machines. Batch MP-PCM-2602 was rejected and will not be released."
+  },
+  {
+    "id": "Email_Thread_2602.txt::chunk0",
+    "source_file": "Email_Thread_2602.txt",
+    "doc_type": "email",
+    "text": "From: Priya Nair To: Rajesh Kumar Subject: URGENT - Batch MP-PCM-2602 weight check failed Date: 2026-02-14 11:45 AM Rajesh, Flagging immediately - the 11:40 AM in-process weight check on Batch MP-PCM-2602 (Machine TCM-04) came back at 612mg average, well above our 600mg upper limit. I've stopped the run and put the batch on hold. Raising a deviation now (DEV-2602-001). - Priya --- From: Rajesh Kumar To: Priya Nair, Anita Desai Subject: RE: URGENT - Batch MP-PCM-2602 weight check failed"
+  },
+  {
+    "id": "Email_Thread_2602.txt::chunk1",
+    "source_file": "Email_Thread_2602.txt",
+    "doc_type": "email",
+    "text": "Date: 2026-02-14 12:10 PM Priya, good catch, thanks for stopping it fast. Anita - can you get TCM-04 inspected first thing tomorrow? We need root cause before we can even think about disposition on this batch. Pulling the maintenance log now. - Rajesh --- From: Anita Desai To: Rajesh Kumar, Priya Nair Subject: RE: URGENT - Batch MP-PCM-2602 weight check failed Date: 2026-02-15 09:30 AM Team, Inspected TCM-04 this morning. Found a worn punch tip at station 6, and general"
+  },
+  {
+    "id": "Email_Thread_2602.txt::chunk2",
+    "source_file": "Email_Thread_2602.txt",
+    "doc_type": "email",
+    "text": "degraded punch tooling across the upper punch set - that's almost certainly why fill depth was off and tablets came out overweight. Checked the maintenance history - this machine's ENG-007 checkup was due 2026-01-30 and was never completed. Suresh's team missed the scheduled window. That's the underlying cause here, not just a random tooling failure. Writing this up in DEV-2602-001. Recommending we replace the punch set and tighten"
+  },
+  {
+    "id": "Email_Thread_2602.txt::chunk3",
+    "source_file": "Email_Thread_2602.txt",
+    "doc_type": "email",
+    "text": "up scheduling compliance for ENG-007 across all machines, not just TCM-04. - Anita"
+  },
+  {
+    "id": "PID_TCM04_Line4.png::chunk0",
+    "source_file": "PID_TCM04_Line4.png",
+    "doc_type": "image_ocr",
+    "text": "P&ID - Tablet Compression Line 4 TCM-04 KJ} HOPPER-4  DEDUST-4 Tablet Compression Machine 4 Feed line from Granulation -> Hopper -> TCM-04 -> Dedusting -> Coating Machine ID Tag: TCM-04 | Line: 4 | Area: Tablet Compression Suite"
+  },
+  {
+    "id": "SOP_ENG-007_Maintenance.pdf::chunk0",
+    "source_file": "SOP_ENG-007_Maintenance.pdf",
+    "doc_type": "pdf",
+    "text": "SOP ENG-007: Preventive Maintenance of Tablet Compression Machines SOP Number: ENG-007. Scope: All tablet compression machines (TCM-01 through TCM-06) at the Meridian Pharmaceuticals manufacturing facility. Requirement: Every compression machine must undergo a full preventive maintenance checkup, including punch and die inspection, every 90 days. Punches showing wear beyond tolerance must be replaced before the machine is returned to production."
+  },
+  {
+    "id": "SOP_ENG-007_Maintenance.pdf::chunk1",
+    "source_file": "SOP_ENG-007_Maintenance.pdf",
+    "doc_type": "pdf",
+    "text": "Responsible Party: Maintenance Team, under supervision of Maintenance Engineer Anita Desai. Maintenance Technician Suresh Iyer is responsible for logging checkup completion in the Machine Maintenance Log. Non-compliance with this SOP has historically been linked to tablet weight and hardness deviations due to degraded punch tooling."
+  },
+  {
+    "id": "Training_Records.xlsx::chunk0",
+    "source_file": "Training_Records.xlsx",
+    "doc_type": "excel",
+    "text": "Employee Name: Priya Nair, Role: Operator, Training Course: Tablet Compression Operation - Level 2, Completion Date: 2025-11-05, Certified For Machine: TCM-04 Employee Name: Priya Nair, Role: Operator, Training Course: In-Process Quality Checks, Completion Date: 2025-11-12, Certified For Machine: All Compression Machines Employee Name: Suresh Iyer, Role: Maintenance Technician, Training Course: Punch & Die Maintenance, Completion Date: 2025-09-20, Certified For Machine: All Compression Machines"
+  },
+  {
+    "id": "Training_Records.xlsx::chunk1",
+    "source_file": "Training_Records.xlsx",
+    "doc_type": "excel",
+    "text": "Employee Name: Anita Desai, Role: Maintenance Engineer, Training Course: SOP ENG-007 Certification, Completion Date: 2025-08-15, Certified For Machine: All Compression Machines Employee Name: Rajesh Kumar, Role: Shift Supervisor, Training Course: Deviation Management QA-015, Completion Date: 2025-07-01, Certified For Machine: N/A"
+  }
+]

@@ -1,0 +1,10 @@
+chromadb
+anthropic
+streamlit
+pyvis
+openpyxl
+pypdf
+pytesseract
+pillow
+scikit-learn
+reportlab

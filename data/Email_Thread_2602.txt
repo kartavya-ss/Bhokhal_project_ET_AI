@@ -1,0 +1,48 @@
+From: Priya Nair
+To: Rajesh Kumar
+Subject: URGENT - Batch MP-PCM-2602 weight check failed
+Date: 2026-02-14 11:45 AM
+
+Rajesh,
+
+Flagging immediately - the 11:40 AM in-process weight check on Batch MP-PCM-2602
+(Machine TCM-04) came back at 612mg average, well above our 600mg upper limit.
+I've stopped the run and put the batch on hold. Raising a deviation now (DEV-2602-001).
+
+- Priya
+
+---
+
+From: Rajesh Kumar
+To: Priya Nair, Anita Desai
+Subject: RE: URGENT - Batch MP-PCM-2602 weight check failed
+Date: 2026-02-14 12:10 PM
+
+Priya, good catch, thanks for stopping it fast.
+
+Anita - can you get TCM-04 inspected first thing tomorrow? We need root cause before
+we can even think about disposition on this batch. Pulling the maintenance log now.
+
+- Rajesh
+
+---
+
+From: Anita Desai
+To: Rajesh Kumar, Priya Nair
+Subject: RE: URGENT - Batch MP-PCM-2602 weight check failed
+Date: 2026-02-15 09:30 AM
+
+Team,
+
+Inspected TCM-04 this morning. Found a worn punch tip at station 6, and general
+degraded punch tooling across the upper punch set - that's almost certainly why fill
+depth was off and tablets came out overweight.
+
+Checked the maintenance history - this machine's ENG-007 checkup was due 2026-01-30
+and was never completed. Suresh's team missed the scheduled window. That's the
+underlying cause here, not just a random tooling failure.
+
+Writing this up in DEV-2602-001. Recommending we replace the punch set and tighten
+up scheduling compliance for ENG-007 across all machines, not just TCM-04.
+
+- Anita
