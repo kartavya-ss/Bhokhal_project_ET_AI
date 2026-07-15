@@ -9,7 +9,9 @@ from PIL import Image
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 DATA_DIR = "ingestion/data"
-OUTPUT_FILE = "ingestion/data/extracted_documents.json"
+OUTPUT_DIR = "ingestion/output"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "extracted_documents.json")
+
 
 def extract_pdf_text(filepath):
     """Extract both plain text and tables from a digital PDF, page by page."""
@@ -50,6 +52,8 @@ def extract_image_text(filepath):
     image = Image.open(filepath)
     raw_text = pytesseract.image_to_string(image)
     return [{"page": 1, "text": raw_text.strip()}]
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def process_all_documents():
     all_documents = []
