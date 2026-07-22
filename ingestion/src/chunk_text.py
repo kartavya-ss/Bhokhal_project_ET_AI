@@ -26,9 +26,11 @@ def chunk_paragraph(paragraph, chunk_size, overlap):
         start = end - overlap  # step back by 'overlap' so chunks share context
     return chunks
 
+MIN_CHUNK_LENGTH = 40  # chunks shorter than this get merged into the next one
+
 def chunk_document(document):
     """Turn one document's pages into a list of chunk records with metadata."""
-    all_chunks = []
+    raw_chunks = []  # temporary list before merging short ones
     chunk_counter = 1
 
     for page in document["pages"]:
@@ -38,16 +40,52 @@ def chunk_document(document):
             sub_chunks = chunk_paragraph(para, CHUNK_SIZE, CHUNK_OVERLAP)
 
             for sub_chunk in sub_chunks:
-                all_chunks.append({
-                    "chunk_id": f"{document['document_id']}_chunk{chunk_counter}",
-                    "document_id": document["document_id"],
-                    "source_type": document["source_type"],
+                raw_chunks.append({
                     "page": page["page"],
                     "text": sub_chunk
                 })
-                chunk_counter += 1
 
-    return all_chunks
+    # Merge short chunks into the next chunk on the same page
+    merged_chunks = []
+    buffer_text = ""
+    buffer_page = None
+
+    for chunk in raw_chunks:
+        if buffer_text:
+            # Combine leftover short text with current chunk
+            combined_text = buffer_text + "\n" + chunk["text"]
+            buffer_text = ""
+        else:
+            combined_text = chunk["text"]
+
+        if len(combined_text) < MIN_CHUNK_LENGTH:
+            # Still too short — hold it and merge with the NEXT one instead
+            buffer_text = combined_text
+            buffer_page = chunk["page"]
+            continue
+
+        merged_chunks.append({"page": chunk["page"], "text": combined_text})
+
+    # If anything is left over at the very end (last chunk was short with nothing after it)
+    if buffer_text:
+        if merged_chunks:
+            merged_chunks[-1]["text"] += "\n" + buffer_text
+        else:
+            merged_chunks.append({"page": buffer_page, "text": buffer_text})
+
+    # Now build the final chunk records with proper IDs
+    final_chunks = []
+    for chunk in merged_chunks:
+        final_chunks.append({
+            "chunk_id": f"{document['document_id']}_chunk{chunk_counter}",
+            "document_id": document["document_id"],
+            "source_type": document["source_type"],
+            "page": chunk["page"],
+            "text": chunk["text"]
+        })
+        chunk_counter += 1
+
+    return final_chunks
 
 def process_all_chunks():
     """Main orchestrator: Reads extracted text, chunks it, and saves the output."""
