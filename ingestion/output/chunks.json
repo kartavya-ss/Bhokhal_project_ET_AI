@@ -732,129 +732,101 @@
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Anita,"
+    "text": "Anita,\nFlagging an OOS at the compression stage for Batch MP-PCM-2602 (Paracetamol\nTablets IP 500 mg). Average weight came back at 579 mg against spec of 550 mg\n+/-5%, and 4 of 20 tablets in the weight-variation sample are outside the\n+/-7.5% individual limit."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk4",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Flagging an OOS at the compression stage for Batch MP-PCM-2602 (Paracetamol\nTablets IP 500 mg). Average weight came back at 579 mg against spec of 550 mg\n+/-5%, and 4 of 20 tablets in the weight-variation sample are outside the\n+/-7.5% individual limit."
+    "text": "I've stopped compression and quarantined the in-process bulk. Raising this as\na deviation now - reference will be DEV-2026-014."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk5",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "I've stopped compression and quarantined the in-process bulk. Raising this as\na deviation now - reference will be DEV-2026-014."
+    "text": "Rakesh, can Engineering take a look at TCM-04? This looks like it could be a\ntooling issue rather than a formulation one, since granulation IPQC was clean."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk6",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Rakesh, can Engineering take a look at TCM-04? This looks like it could be a\ntooling issue rather than a formulation one, since granulation IPQC was clean."
+    "text": "- Priya\n--------------------------------------------------------------------\nFrom: Anita Verma <anita.verma@meridianpharma-demo.local>\nTo: Priya Nair <priya.nair@meridianpharma-demo.local>\nCc: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Sunil Mehta <sunil.mehta@meridianpharma-demo.local>\nDate: 14-Jan-2026 13:15\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk7",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "- Priya"
+    "text": "Good catch, Priya. Confirmed batch is on hold in the system under DEV-2026-014."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk8",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "--------------------------------------------------------------------\nFrom: Anita Verma <anita.verma@meridianpharma-demo.local>\nTo: Priya Nair <priya.nair@meridianpharma-demo.local>\nCc: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Sunil Mehta <sunil.mehta@meridianpharma-demo.local>\nDate: 14-Jan-2026 13:15\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
+    "text": "Dr. Mehta - looping you in per SOP-QA-014 since this is a Major classification\n(weight variation OOS, in-process rejection risk). Investigation to follow the\nstandard root-cause format; I'll need Engineering's PM/calibration log for\nTCM-04 as part of the investigation pack."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk9",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Good catch, Priya. Confirmed batch is on hold in the system under DEV-2026-014."
+    "text": "Rakesh - please have Engineering pull the last PM record for TCM-04 by end of\nday and check current punch condition."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk10",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Dr. Mehta - looping you in per SOP-QA-014 since this is a Major classification\n(weight variation OOS, in-process rejection risk). Investigation to follow the\nstandard root-cause format; I'll need Engineering's PM/calibration log for\nTCM-04 as part of the investigation pack."
+    "text": "- Anita\n--------------------------------------------------------------------\nFrom: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>\nTo: Anita Verma <anita.verma@meridianpharma-demo.local>\nCc: Priya Nair <priya.nair@meridianpharma-demo.local>\nDate: 14-Jan-2026 16:02\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk11",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Rakesh - please have Engineering pull the last PM record for TCM-04 by end of\nday and check current punch condition."
+    "text": "Update from Engineering: TCM-04's preventive maintenance and punch inspection\nwas due 12 days ago and wasn't done - looks like it slipped through over the\nholiday schedule. Punches show visible wear on inspection."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk12",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "- Anita"
+    "text": "That's likely our root cause. I've pulled the machine off the schedule and\nEngineering is inspecting/replacing tooling now. I'm also raising a separate\ndeviation for the missed PM (DEV-2026-015) since that's a system gap on our\nside, not just a machine fault."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk13",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "--------------------------------------------------------------------\nFrom: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>\nTo: Anita Verma <anita.verma@meridianpharma-demo.local>\nCc: Priya Nair <priya.nair@meridianpharma-demo.local>\nDate: 14-Jan-2026 16:02\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
+    "text": "- Rakesh\n--------------------------------------------------------------------\nFrom: Sunil Mehta <sunil.mehta@meridianpharma-demo.local>\nTo: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Anita Verma <anita.verma@meridianpharma-demo.local>\nCc: Priya Nair <priya.nair@meridianpharma-demo.local>\nDate: 15-Jan-2026 09:30\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk14",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "Update from Engineering: TCM-04's preventive maintenance and punch inspection\nwas due 12 days ago and wasn't done - looks like it slipped through over the\nholiday schedule. Punches show visible wear on inspection."
+    "text": "Agreed on treating the missed PM as a linked but separate deviation\n(DEV-2026-015) - the punch wear is the immediate cause, the scheduling gap is\nthe systemic one, and both need their own CAPA."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk15",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "That's likely our root cause. I've pulled the machine off the schedule and\nEngineering is inspecting/replacing tooling now. I'm also raising a separate\ndeviation for the missed PM (DEV-2026-015) since that's a system gap on our\nside, not just a machine fault."
+    "text": "Approving CAPA-2026-011 (punch replacement + revised PM frequency for TCM-04)\nand CAPA-2026-012 (automated PM/calibration due-date alerting). Please route\nboth through Quality Council for sign-off this week."
   },
   {
     "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk16",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
-    "text": "- Rakesh"
-  },
-  {
-    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk17",
-    "document_id": "Email_Thread_DEV-2026-014.txt",
-    "source_type": "txt",
-    "page": 1,
-    "text": "--------------------------------------------------------------------\nFrom: Sunil Mehta <sunil.mehta@meridianpharma-demo.local>\nTo: Rakesh Sharma <rakesh.sharma@meridianpharma-demo.local>; Anita Verma <anita.verma@meridianpharma-demo.local>\nCc: Priya Nair <priya.nair@meridianpharma-demo.local>\nDate: 15-Jan-2026 09:30\nSubject: RE: OOS Alert - Batch MP-PCM-2602 Compression Stage - Immediate Hold Required"
-  },
-  {
-    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk18",
-    "document_id": "Email_Thread_DEV-2026-014.txt",
-    "source_type": "txt",
-    "page": 1,
-    "text": "Agreed on treating the missed PM as a linked but separate deviation\n(DEV-2026-015) - the punch wear is the immediate cause, the scheduling gap is\nthe systemic one, and both need their own CAPA."
-  },
-  {
-    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk19",
-    "document_id": "Email_Thread_DEV-2026-014.txt",
-    "source_type": "txt",
-    "page": 1,
-    "text": "Approving CAPA-2026-011 (punch replacement + revised PM frequency for TCM-04)\nand CAPA-2026-012 (automated PM/calibration due-date alerting). Please route\nboth through Quality Council for sign-off this week."
-  },
-  {
-    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk20",
-    "document_id": "Email_Thread_DEV-2026-014.txt",
-    "source_type": "txt",
-    "page": 1,
     "text": "Priya - please confirm the affected sub-lot of MP-PCM-2602 is clearly\nsegregated so we don't risk any cross-contamination with the conforming\nsub-lot pending final disposition."
   },
   {
-    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk21",
+    "chunk_id": "Email_Thread_DEV-2026-014.txt_chunk17",
     "document_id": "Email_Thread_DEV-2026-014.txt",
     "source_type": "txt",
     "page": 1,
@@ -1138,63 +1110,21 @@
     "document_id": "PID_Purified_Water_System.png",
     "source_type": "png",
     "page": 1,
-    "text": "Raw Water Feed Pump"
+    "text": "Raw Water Feed Pump\nStorage Tank\nP-102\nDistribution\nPump"
   },
   {
     "chunk_id": "PID_Purified_Water_System.png_chunk7",
     "document_id": "PID_Purified_Water_System.png",
     "source_type": "png",
     "page": 1,
-    "text": "Storage Tank"
+    "text": "Return Loop to T-101 (dashed = return line)"
   },
   {
     "chunk_id": "PID_Purified_Water_System.png_chunk8",
     "document_id": "PID_Purified_Water_System.png",
     "source_type": "png",
     "page": 1,
-    "text": "P-102"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk9",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "Distribution\nPump"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk10",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "Return Loop to T-101 (dashed = return line)"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk11",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "Legend:"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk12",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "|_|\n|_|"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk13",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "Process equipment Solid line = supply flow | Dashed line = return flow | POU = Point of Use"
-  },
-  {
-    "chunk_id": "PID_Purified_Water_System.png_chunk14",
-    "document_id": "PID_Purified_Water_System.png",
-    "source_type": "png",
-    "page": 1,
-    "text": "Storage tank"
+    "text": "Legend:\n|_|\n|_|\nProcess equipment Solid line = supply flow | Dashed line = return flow | POU = Point of Use\nStorage tank"
   },
   {
     "chunk_id": "Regulatory_Response_Letter.pdf_chunk1",
@@ -1417,67 +1347,60 @@
     "chunk_id": "Sample SDS Handout.pdf_chunk26",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
-    "page": 8,
-    "text": "ption.\nPage 8 / 10"
+    "page": 9,
+    "text": "ption.\nPage 8 / 10\nXXXXX Regular-Bleach 1 Revision Date June 12, 2015\n15. REGULATORY INFORMATION\nChemical Inventories\nTSCA All components of this product are either on the TSCA 8(b) Inventory or otherwise exempt\nfrom listing.\nDSL/NDSL All components are on the DSL or NDSL.\nTSCA -United States Toxic Substances Control Act Section 8(b) Inventory\nDSL/NDSL - Canadian Domestic Substances List/Non-Domestic Substances List\nU.S. Federal Regulations\nSARA 313\nSection 313 of Title III of the Superfund Amendments and Reauthorization Act of 1986 (SARA). This product does not contain any\nchemicals which are subject to the reporting requirements of the Act and Title 40 of the Code of Federal Regulations, Part 372\nSARA 311/312 Hazard Categories\nAcute Health Hazard Yes\nChronic Health Hazard No\nFire Hazard No\nSudden Release o"
   },
   {
     "chunk_id": "Sample SDS Handout.pdf_chunk27",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 9,
-    "text": "XXXXX Regular-Bleach 1 Revision Date June 12, 2015\n15. REGULATORY INFORMATION\nChemical Inventories\nTSCA All components of this product are either on the TSCA 8(b) Inventory or otherwise exempt\nfrom listing.\nDSL/NDSL All components are on the DSL or NDSL.\nTSCA -United States Toxic Substances Control Act Section 8(b) Inventory\nDSL/NDSL - Canadian Domestic Substances List/Non-Domestic Substances List\nU.S. Federal Regulations\nSARA 313\nSection 313 of Title III of the Superfund Amendments and Reauthorization Act of 1986 (SARA). This product does not contain any\nchemicals which are subject to the reporting requirements of the Act and Title 40 of the Code of Federal Regulations, Part 372\nSARA 311/312 Hazard Categories\nAcute Health Hazard Yes\nChronic Health Hazard No\nFire Hazard No\nSudden Release o"
+    "text": " Code of Federal Regulations, Part 372\nSARA 311/312 Hazard Categories\nAcute Health Hazard Yes\nChronic Health Hazard No\nFire Hazard No\nSudden Release of Pressure Hazard No\nReactive Hazard No\nClean Water Act\nThis product contains the following substances which are regulated pollutants pursuant to the Clean Water Act (40 CFR 122.21 and\n40 CFR 122.42)\nCWA -Reportable CWA -Hazardous\nChemical Name CWA - Toxic Pollutants CWA - Priority Pollutants\nQuantities Substances\nSodium hypochlorite\n100 lb X\n7681-52-9\nCERCLA\nThis material, as supplied, contains one or more substances regulated as a hazardous substance under the Comprehensive\nEnvironmental Response Compensation and Liability Act (CERCLA) (40 CFR 302)\nExtremely Hazardous Substances\nChemical Name Hazardous Substances RQs RQ\nRQs\nSodium hypochlor"
   },
   {
     "chunk_id": "Sample SDS Handout.pdf_chunk28",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 9,
-    "text": " Code of Federal Regulations, Part 372\nSARA 311/312 Hazard Categories\nAcute Health Hazard Yes\nChronic Health Hazard No\nFire Hazard No\nSudden Release of Pressure Hazard No\nReactive Hazard No\nClean Water Act\nThis product contains the following substances which are regulated pollutants pursuant to the Clean Water Act (40 CFR 122.21 and\n40 CFR 122.42)\nCWA -Reportable CWA -Hazardous\nChemical Name CWA - Toxic Pollutants CWA - Priority Pollutants\nQuantities Substances\nSodium hypochlorite\n100 lb X\n7681-52-9\nCERCLA\nThis material, as supplied, contains one or more substances regulated as a hazardous substance under the Comprehensive\nEnvironmental Response Compensation and Liability Act (CERCLA) (40 CFR 302)\nExtremely Hazardous Substances\nChemical Name Hazardous Substances RQs RQ\nRQs\nSodium hypochlor"
+    "text": "nse Compensation and Liability Act (CERCLA) (40 CFR 302)\nExtremely Hazardous Substances\nChemical Name Hazardous Substances RQs RQ\nRQs\nSodium hypochlorite RQ 100 lb final RQ\n100 lb -\n7681-52-9 RQ 45.4 kg final RQ\nEPA Statement\nThis chemical is a pesticide product registered by the Environmental Protection Agency and is subject to certain labeling\nrequirements under federal pesticide law. These requirements differ from the classification criteria and hazard information required\nfor safety data sheets and for workplace labels of non-pesticide chemicals. Following is the hazard information as required on the\npesticide label:\nDANGER: CORROSIVE. Causes irreversible eye damage and skin burns. Harmful if swallowed. Do not get in eyes, on\nskin, or on clothing. Wear protective eyewear and rubber glo"
   },
   {
     "chunk_id": "Sample SDS Handout.pdf_chunk29",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 9,
-    "text": "nse Compensation and Liability Act (CERCLA) (40 CFR 302)\nExtremely Hazardous Substances\nChemical Name Hazardous Substances RQs RQ\nRQs\nSodium hypochlorite RQ 100 lb final RQ\n100 lb -\n7681-52-9 RQ 45.4 kg final RQ\nEPA Statement\nThis chemical is a pesticide product registered by the Environmental Protection Agency and is subject to certain labeling\nrequirements under federal pesticide law. These requirements differ from the classification criteria and hazard information required\nfor safety data sheets and for workplace labels of non-pesticide chemicals. Following is the hazard information as required on the\npesticide label:\nDANGER: CORROSIVE. Causes irreversible eye damage and skin burns. Harmful if swallowed. Do not get in eyes, on\nskin, or on clothing. Wear protective eyewear and rubber glo"
+    "text": "uses irreversible eye damage and skin burns. Harmful if swallowed. Do not get in eyes, on\nskin, or on clothing. Wear protective eyewear and rubber gloves when handling this product. Wash thoroughly with soap\nand water after handling and before eating, drinking, chewing gum, using tobacco, or using the restroom. Avoid breathing\nvapors and use only in a well-ventilated area.\nPage 9 / 10\n[TABLE 1]\nChemical Name | CWA -Reportable\nQuantities | CWA - Toxic Pollutants | CWA - Priority Pollutants | CWA -Hazardous\nSubstances\nSodium hypochlorite\n7681-52-9 | 100 lb |  |  | X"
   },
   {
     "chunk_id": "Sample SDS Handout.pdf_chunk30",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 9,
-    "text": "uses irreversible eye damage and skin burns. Harmful if swallowed. Do not get in eyes, on\nskin, or on clothing. Wear protective eyewear and rubber gloves when handling this product. Wash thoroughly with soap\nand water after handling and before eating, drinking, chewing gum, using tobacco, or using the restroom. Avoid breathing\nvapors and use only in a well-ventilated area.\nPage 9 / 10\n[TABLE 1]\nChemical Name | CWA -Reportable\nQuantities | CWA - Toxic Pollutants | CWA - Priority Pollutants | CWA -Hazardous\nSubstances\nSodium hypochlorite\n7681-52-9 | 100 lb |  |  | X"
-  },
-  {
-    "chunk_id": "Sample SDS Handout.pdf_chunk31",
-    "document_id": "Sample SDS Handout.pdf",
-    "source_type": "pdf",
-    "page": 9,
     "text": "[TABLE 2]\nChemical Name | Hazardous Substances RQs | Extremely Hazardous Substances\nRQs | RQ\nSodium hypochlorite\n7681-52-9 | 100 lb | - | RQ 100 lb final RQ\nRQ 45.4 kg final RQ"
   },
   {
-    "chunk_id": "Sample SDS Handout.pdf_chunk32",
+    "chunk_id": "Sample SDS Handout.pdf_chunk31",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 10,
     "text": "XXXXX Regular-Bleach 1 Revision Date June 12, 2015\nUS State Regulations\nCalifornia Proposition 65\nThis product does not contain any Proposition 65 chemicals.\nU.S. State Right-to-Know Regulations\n=========\nChemical Name New Jersey Massachusetts Pennsylvania Rhode Island Illinois\nSodium hypochlorite\nX X X X\n7681-52-9\nSodium chlorate\nI 7775-09-9 X X X\nInternational Regulations\nCanada\nWHMIS Hazard Class\nE - Corrosive material\n16. OTHER INFORMATION\nNFPA Health Hazard 3 Flammability 0 Instability 0 Physical and Chemical Hazards -\nHMIS Health Hazard 3 Flammability 0 Physical Hazard 0 Personal Protection B\nPrepared By Product Stewardship\n23 British American Blvd.\nLatham, NY 12110\n1-800-572-6501\nRevision Date June 12, 2015\nRevision Note Revision Section 14.\nReference 1096036/164964.159\nGeneral Disc"
   },
   {
-    "chunk_id": "Sample SDS Handout.pdf_chunk33",
+    "chunk_id": "Sample SDS Handout.pdf_chunk32",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 10,
     "text": "merican Blvd.\nLatham, NY 12110\n1-800-572-6501\nRevision Date June 12, 2015\nRevision Note Revision Section 14.\nReference 1096036/164964.159\nGeneral Disclaimer\nThe information provided in this Safety Data Sheet is correct to the best of our knowledge, information and belief at the\ndate of its publication. The information given is designed only as a guidance for safe handling, use, processing, storage,\ntransportation, disposal, and release and is not to be considered a warranty or quality specification. The information\nrelates only to the specific material designated and may not be valid for such material used in combination with any other\nmaterials or in any process, unless specified in the text.\nEnd of Safety Data Sheet\nThis material was produced under grant 46F6-HT30 from the Occupational S"
   },
   {
-    "chunk_id": "Sample SDS Handout.pdf_chunk34",
+    "chunk_id": "Sample SDS Handout.pdf_chunk33",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 10,
     "text": "als or in any process, unless specified in the text.\nEnd of Safety Data Sheet\nThis material was produced under grant 46F6-HT30 from the Occupational Safety and Health Administration, U.S.\nDepartment of Labor. It does not necessarily reflect the views or policies of the U.S. Department of Labor, nor does mention\nof trade names, commercial products, or organizations imply endorsement by the U.S. Government. Revisions were made to\nthis material under grant number SH-31240-SH7 from the Occupational Safety and Health Administration, U.S. Department\nof Labor.\nPage 10 / 10\n[TABLE 1]\nChemical Name | New Jersey | Massachusetts | Pennsylvania | Rhode Island | Illinois\n=========\nSodium hypochlorite\n7681-52-9 | X | X | X | X | \nSodium chlorate\nI 7775-09-9 | X | X | X |  |"
   },
   {
-    "chunk_id": "Sample SDS Handout.pdf_chunk35",
+    "chunk_id": "Sample SDS Handout.pdf_chunk34",
     "document_id": "Sample SDS Handout.pdf",
     "source_type": "pdf",
     "page": 10,
