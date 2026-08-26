@@ -1,0 +1,32 @@
+# Core ingestion and data processing
+numpy==2.5.1
+openpyxl==3.1.5
+pandas==3.0.3
+pdfminer.six==20260107
+pdfplumber==0.11.10
+pillow==12.3.0
+pypdfium2==5.11.0
+pytesseract==0.3.13
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+
+# Entity extraction and AI services
+google-genai==1.15.0
+
+# Vector retrieval and embeddings
+chromadb==1.5.9
+sentence-transformers==5.6.0
+torch==2.13.0
+torchvision
+transformers==5.14.1
+
+# Knowledge graph and applications
+networkx==3.6.1
+pyvis==0.3.2
+streamlit
+
+# Tests
+pytest==8.3.3
+
+# google-genai requires websockets below 15.1
+websockets==15.0.1
