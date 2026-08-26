@@ -1,305 +1,191 @@
-<div align="center">
-
-# 🧪 Meridian
-
-**An AI-powered pharmaceutical knowledge assistant that turns raw manufacturing and quality documentation into a searchable, explainable, and grounded retrieval system.**
-
-[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Store-3E5AC7)](https://www.trychroma.com/)
-[![SQLite](https://img.shields.io/badge/SQLite-Entity%20Store-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Gemini](https://img.shields.io/badge/Gemini-Answer%20Generation-8E75B2?logo=googlegemini&logoColor=white)](https://ai.google.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green)](#)
-
-*Ingest → Extract → Graph → Embed → Retrieve → Answer*
-
-</div>
+# Meridian
 
----
+Meridian is a knowledge assistant for pharmaceutical manufacturing documentation. You point it at a pile of PDFs — batch records, SOPs, deviation reports, maintenance logs — and it lets you ask plain-English questions and get answers that are actually grounded in those documents, with sources you can check.
 
-## 📋 Table of Contents
+We built this for the Economic Times AI Hackathon.
 
-- [Problem Statement](#-problem-statement)
-- [High-Level Pipeline](#-high-level-pipeline)
-- [Project Architecture](#-project-architecture)
-- [Pipeline Layers](#-pipeline-layers)
-- [Retrieval Strategy](#-end-to-end-retrieval-strategy)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
-- [Key Outputs](#-key-outputs)
-- [Why This Is a Strong Hackathon Project](#-why-this-is-a-strong-hackathon-project)
-- [Future Enhancements](#-future-enhancements)
+## The problem we're solving
 
----
+Pharma manufacturing generates a lot of paperwork: batch manufacturing records, SOPs, CAPAs, equipment maintenance logs, supplier certificates, FDA correspondence. All of it matters for compliance and traceability, but it's scattered across formats and hard to search. If you want to know "why was the preventive maintenance overdue on machine TCM-04," you'd normally have to dig through multiple documents by hand.
 
-## 🎯 Problem Statement
+Meridian tries to fix that by reading all the documents once, pulling out the structured facts (materials, equipment, operators, SOP references, and how they relate to each other), and then answering questions using that structured knowledge plus the original document text — not just guessing from a language model's general knowledge.
 
-Pharmaceutical operations rely on large volumes of technical records — SOPs, deviations, CAPAs, maintenance logs, and quality documents. These records are often scattered across formats and are difficult to search semantically or trace back to the right source.
+## How it actually works
 
-**Meridian** solves this by connecting:
+The pipeline has five stages, and each one lives in its own folder so it's easy to run or debug independently.
 
-| | |
-|---|---|
-| 📥 | Raw document ingestion |
-| 🏷️ | Structured entity extraction |
-| 🕸️ | Graph-based relationship discovery |
-| 🔎 | Semantic vector search |
-| 💬 | Grounded Q&A with source-aware answers |
+**1. Ingestion** (`ingestion/`)
+Takes the raw documents, pulls out the text, and splits it into chunks small enough to embed and search individually. Output is `chunks.json`, which every later stage reads from.
 
----
+**2. Entity extraction** (`entity_extraction/`)
+Runs each chunk through Gemini with a prompt that asks it to identify entities — materials, equipment, operators, SOP references — and any relationships between them (e.g. "Material X was used in Batch Y"). These get written into a SQLite database (`meridian.db`). We also do entity resolution here: if the same material shows up as "Microcrystalline Cellulose" on one page and "MCC NF" on another, but they share the same supplier code, we merge them into one entity record instead of creating duplicates.
 
-## 🔄 High-Level Pipeline
+**3. Knowledge graph** (`knowledge_graph/`)
+Reads the relationships out of the entity store and renders them as an interactive graph (using PyVis) so you can visually explore how equipment, materials, and process steps connect to each other.
 
-```mermaid
-flowchart LR
-    A["📥 Ingestion Layer<br/>PDF / TXT / CSV Inputs"] --> B["✂️ Text Extraction<br/>& Chunking"]
-    B --> C["🏷️ Entity Extraction<br/>Structured Store"]
-    C --> D["🕸️ Knowledge Graph<br/>Relationship View"]
-    B --> E["🔎 Vector Embedding<br/>ChromaDB + SentenceTransformer"]
-    C --> F["💬 Grounded RAG Answering"]
-    D --> F
-    E --> F
-    F --> G["🖥️ Streamlit Frontend<br/>Meridian Chat UI"]
+**4. Vector embeddings** (`vector_embedding/`)
+Takes the same chunks from stage 1, embeds them with a sentence-transformer model, and stores them in ChromaDB so we can do semantic search — finding chunks that are conceptually related to a question even if they don't share exact keywords.
 
-    style A fill:#1D9E75,color:#fff
-    style B fill:#378ADD,color:#fff
-    style C fill:#7F77DD,color:#fff
-    style D fill:#D4537E,color:#fff
-    style E fill:#EF9F27,color:#fff
-    style F fill:#D85A30,color:#fff
-    style G fill:#2E2E2E,color:#fff
-```
+**5. Frontend** (`frontend/`)
+Two Streamlit apps:
+- `streamlit_app.py` — the clean, end-user chat interface. Ask a question, get an answer with sources.
+- `admin_app.py` — an internal tool with the same chat, plus the knowledge graph view, an entity browser, and a document library.
 
----
+## Answering a question: three sources, not one
 
-## 🏗️ Project Architecture
+When you ask a question, Meridian doesn't rely on just one retrieval method. It pulls from three places and combines them:
 
-```text
-meridian/
-├── ingestion/               📥 Document ingestion and chunk preparation
-│   ├── src/
-│   ├── data/
-│   └── output/
-├── entity_extraction/       🏷️ Entity extraction + SQLite entity store
-│   ├── src/
-│   └── output/
-├── knowledge_graph/         🕸️ Knowledge graph rendering and relationship visualization
-│   ├── src/
-│   └── output/
-├── vector_embedding/        🔎 Semantic embedding store and retrieval pipeline
-│   ├── src/
-│   └── output/
-└── frontend/                🖥️ Streamlit app for end-user experience
-```
+- **Vector search** (ChromaDB) — finds chunks that are semantically similar to the question.
+- **Entity store** (SQLite) — finds exact keyword/code matches, which vector search sometimes misses (e.g. an exact material code like `SUP-1187`).
+- **Knowledge graph** — pulls in relationships that help explain *why* things are connected, not just *what* they are.
 
----
+All three get fed into Gemini along with the question, and the model is instructed to answer only from that context and cite its sources.
 
-## 🧩 Pipeline Layers
+## Corrective RAG (CRAG)
 
-<details open>
-<summary><b>1️⃣ Ingestion Layer</b> — 📥 pulls in raw documents and prepares them for retrieval</summary>
+This is the part we're most proud of. A plain RAG system just trusts whatever the vector search's top results happen to be — even if they're a bad match for the question. That's a real problem: embeddings can miss on jargon, typos, or questions phrased differently from the source text, and the model will still confidently answer from whatever garbage it was handed.
 
-<br>
+Our retrieval pipeline (`vector_embedding/src/crag.py`) adds a grading step in between retrieval and answering:
 
-**Responsibilities:**
-- Extract text from source documents
-- Normalize document structure
-- Split content into semantic chunks
-- Produce `chunks.json` as the shared input for downstream layers
+1. Retrieve the top chunks from the vector store, same as normal.
+2. Have an LLM grade each chunk against the question: is it `CORRECT`, `AMBIGUOUS`, or `INCORRECT`?
+3. Decide what to do based on that, instead of blindly trusting the top results:
+   - If most chunks grade `CORRECT`, just answer from them.
+   - If the grades are mixed, keep what's good and broaden the search — pull more chunks from the vector store and also check the entity store, to fill in the gaps.
+   - If everything grades `INCORRECT` (or the vector store returns nothing at all), throw away those results entirely and fall back to the entity and knowledge-graph stores, which use exact code/keyword matching and often catch what semantic search missed.
 
-📁 Folder: [`ingestion/`](ingestion/)
+The point is: never confidently answer off context that's actually irrelevant, and never give up just because the first search attempt came back weak.
 
-</details>
+We also had to handle the fact that the Gemini API occasionally returns a `503` when it's under heavy load. The grader retries a couple of times with a short backoff, and if it's still failing after that, it grades the chunk as `AMBIGUOUS` rather than crashing the whole app — same idea for the final answer-generation call.
 
-<details open>
-<summary><b>2️⃣ Entity Extraction Layer</b> — 🏷️ converts chunks into structured, queryable facts</summary>
+## Tech stack
 
-<br>
+- **Python 3.11+**
+- **Gemini API** — entity extraction, relevance grading, and final answer generation
+- **ChromaDB** — vector store for semantic search
+- **Sentence Transformers** (`all-MiniLM-L6-v2`) — embeddings
+- **SQLite** — structured entity/relationship store
+- **PyVis** — interactive knowledge graph rendering
+- **Streamlit** — both frontend apps
+- **pytest** — test suite, with the Gemini client mocked so tests run offline
 
-**Responsibilities:**
-- Identify entities such as equipment, materials, operators, SOP references, and process steps
-- Capture entity mentions with context snippets
-- Persist structured knowledge in the SQLite entity store (`meridian.db`)
-- Support direct SQL-style retrieval for audit-friendly grounded answers
+## Running it yourself
 
-📁 Folder: [`entity_extraction/`](entity_extraction/)
-
-</details>
-
-<details open>
-<summary><b>3️⃣ Knowledge Graph Layer</b> — 🕸️ visualizes relationships between extracted entities</summary>
-
-<br>
-
-**Responsibilities:**
-- Read relationships from the entity store
-- Render an interactive graph for exploration
-- Reveal structural links between equipment, materials, process steps, and compliance artifacts
-
-📁 Folder: [`knowledge_graph/`](knowledge_graph/)
-
-</details>
-
-<details open>
-<summary><b>4️⃣ Vector Embedding Layer</b> — 🔎 enables semantic search over chunked text</summary>
-
-<br>
-
-**Responsibilities:**
-- Load the ingestion chunks
-- Generate embeddings using Sentence Transformers
-- Store embeddings in ChromaDB
-- Retrieve the most relevant text chunks during question answering
-
-📁 Folder: [`vector_embedding/`](vector_embedding/)
-
-</details>
-
-<details open>
-<summary><b>5️⃣ Frontend Layer</b> — 🖥️ the polished, user-facing experience</summary>
-
-<br>
-
-**Responsibilities:**
-- Accept natural language questions
-- Retrieve supporting evidence from the end-to-end pipeline
-- Generate grounded answers with source references
-- Provide a clean, demo-ready experience for judges and users
-
-📁 Folder: [`frontend/`](frontend/)
-
-</details>
-
----
-
-## 🔗 End-to-End Retrieval Strategy
-
-Meridian uses a **hybrid context strategy** rather than relying on a single retrieval mode:
-
-| Mode | Source | Contributes |
-|---|---|---|
-| 🔎 Vector retrieval | ChromaDB | Semantic matching |
-| 🏷️ Entity store retrieval | SQLite | Factual mentions + context snippets |
-| 🕸️ Graph relationship retrieval | Entity/relationship graph | Structural reasoning |
-
-This blend improves answer quality by combining **semantic similarity**, **explicit entity facts**, and **relationship-aware context**.
-
----
-
-## 🛡️ Corrective RAG (CRAG)
-
-Plain RAG trusts whatever the vector store's top-k happens to return, even when it's a bad match. Meridian's retrieval pipeline (`vector_embedding/src/crag.py`) adds a grading step in between retrieval and generation:
-
-1. **Retrieve** the top-k vector chunks, same as before.
-2. **Grade** each chunk's relevance to the question — `CORRECT` / `AMBIGUOUS` / `INCORRECT` — using an LLM relevance evaluator.
-3. **Decide, don't guess:**
-   - Mostly `CORRECT` → answer from the retrieved chunks as-is.
-   - Mixed grades → keep the good chunks, **broaden** the search (wider vector top-k + entity/keyword store) to fill the gaps.
-   - All `INCORRECT` (or nothing retrieved) → discard the vector hits entirely and fall back to the entity + knowledge-graph stores, which use exact code/keyword matching and often recover what semantic search missed.
-
-This keeps the system from confidently answering off irrelevant context, and from giving up when the first retrieval attempt misses.
-
-📁 Module: [`vector_embedding/src/crag.py`](vector_embedding/src/crag.py)
-
----
-
-## 🛠️ Tech Stack
-
-<div align="left">
-
-![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
-![SQLite](https://img.shields.io/badge/-SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/-ChromaDB-3E5AC7?style=flat-square)
-![Sentence Transformers](https://img.shields.io/badge/-Sentence%20Transformers-F9A825?style=flat-square)
-![Gemini](https://img.shields.io/badge/-Google%20Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
-![PyVis](https://img.shields.io/badge/-PyVis-2E2E2E?style=flat-square)
-
-</div>
-
----
-
-## 🚀 Quick Start
-
-### 1. Install dependencies
+**1. Install dependencies**
 ```bash
-pip install -r ingestion/requirements.txt
-pip install -r vector_embedding/requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-### 2. Prepare the documents
-Run the ingestion pipeline to create `chunks.json`.
+**2. Set your API key**
 
-### 3. Build the structured entity store
-Load semantic chunks into the entity extraction pipeline so the SQLite database is populated.
+Copy `.env.example` to `.env` and put your Gemini key in it:
+```
+GEMINI_API_KEY=your_actual_key
+```
 
-### 4. Build the vector index
+**3. Run the pipeline in order**
+```bash
+# ingest documents into chunks.json
+cd ingestion/src && python ingest.py
+
+# extract entities + build the SQLite store
+cd ../../entity_extraction/src
+python build_db.py
+python extract_entities.py --chunks ../../ingestion/output/chunks.json
+python load_entities.py
+
+# build the knowledge graph
+cd ../../knowledge_graph/src
+python build_graph.py --db ../../entity_extraction/output/meridian.db
+
+# build the vector index
+cd ../../vector_embedding/src
+python build_vector_store.py
+```
+
+**4. Launch the app**
+```bash
+cd frontend
+streamlit run admin_app.py       # full internal tool: chat + graph + entity browser
+# or
+streamlit run streamlit_app.py   # clean, end-user chat only
+```
+
+**5. Run the tests**
+```bash
+python -m pytest -q
+```
+Every test mocks the Gemini client, so this runs fully offline — no API key or network access needed. The suite covers entity extraction parsing, entity-resolution/dedup logic, all three CRAG decision paths, and the retry/fallback behavior when the Gemini API is unavailable.
+
+## Module details
+
+### Ingestion
+
+The ingestion stage extracts text and tables into `ingestion/output/extracted_documents.json`, then creates `ingestion/output/chunks.json`. Each chunk contains `chunk_id`, `document_id`, `source_type`, `page`, and `text`. Tables use `[TABLE N]` markers and pipe-separated rows. The included sensor CSV is intentionally kept as structured data rather than narrative chunks.
+
+Run it from the repository root:
+
+```bash
+python ingestion/src/extract_text.py
+python ingestion/src/chunk_text.py
+```
+
+### Entity extraction and SQLite schema
+
+The entity stage uses Gemini to extract materials, SOP references, operators, equipment, process steps, parameters, batch IDs, timestamps, and relationships. The SQLite schema is `documents -> entity_mentions -> entities`, with a separate `relationships` table.
+
+```bash
+python entity_extraction/src/build_db.py --extracted-docs ingestion/output/extracted_documents.json --db entity_extraction/output/meridian.db
+python entity_extraction/src/extract_entities.py --chunks ingestion/output/chunks.json --out entity_extraction/output/extracted_entities.json
+python entity_extraction/src/load_entities.py --extracted entity_extraction/output/extracted_entities.json --db entity_extraction/output/meridian.db
+python entity_extraction/src/query_examples.py --db entity_extraction/output/meridian.db
+```
+
+### Knowledge graph
+
+The graph stage reads relationships from `meridian.db` and writes a self-contained PyVis HTML export:
+
+```bash
+python knowledge_graph/src/build_graph.py --db entity_extraction/output/meridian.db --out knowledge_graph/output/knowledge_graph.html
+```
+
+Open the generated HTML directly in a browser.
+
+### Vector search and CRAG
+
+The vector stage indexes `ingestion/output/chunks.json` in ChromaDB. `generate_answer.py` combines vector chunks, SQLite entity matches, and knowledge-graph relationships. CRAG grades vector chunks before answer generation and broadens retrieval when the vector results are weak.
+
 ```bash
 python vector_embedding/src/build_vector_store.py
-```
-
-### 5. Generate answers via the hybrid retrieval flow
-```bash
+python vector_embedding/src/query_store.py
 python vector_embedding/src/generate_answer.py
 ```
 
-### 6. Launch the frontend
-```bash
-streamlit run frontend/streamlit_app.py
-```
+### Outputs
 
-> 💬 Ask a question through the Streamlit interface — the app retrieves context from the hybrid pipeline and sends the evidence to Gemini for answer generation.
-
-### 7. Run the tests
-```bash
-pip install -r tests/requirements.txt
-pytest
-```
-The suite mocks the Gemini client (`unittest.mock`), so it runs fully offline — no `GEMINI_API_KEY` or network access required. It covers entity extraction parsing, entity-resolution/dedup logic, and all three CRAG decision paths (used-as-is, broadened, broadened-no-vector).
-
----
-
-## 📦 Key Outputs
-
-| Output | Path |
+| Path | Purpose |
 |---|---|
-| Chunked document text | `ingestion/output/chunks.json` |
-| Structured entity store | `entity_extraction/output/meridian.db` |
-| Interactive knowledge graph | `knowledge_graph/output/knowledge_graph.html` |
-| Vector index | `vector_embedding/output/chroma_db/` |
+| `ingestion/output/chunks.json` | Chunked document text |
+| `entity_extraction/output/meridian.db` | Entity and relationship store |
+| `knowledge_graph/output/knowledge_graph.html` | Interactive graph export |
+| `vector_embedding/output/chroma_db/` | Persistent vector index |
 
----
+## What each output file is
 
-## 🏆 Why This Is a Strong Hackathon Project
+| File | What it is |
+|---|---|
+| `ingestion/output/chunks.json` | Document text, split into chunks |
+| `entity_extraction/output/meridian.db` | The structured entity + relationship store |
+| `knowledge_graph/output/knowledge_graph.html` | The interactive graph you can open in a browser |
+| `vector_embedding/output/chroma_db/` | The vector index used for semantic search |
 
-Meridian combines multiple AI and data engineering patterns into one end-to-end solution:
+## Where this could go next
 
-- ✅ Document ingestion and preprocessing
-- ✅ Structured extraction with entity resolution/dedup
-- ✅ Graph-based reasoning
-- ✅ Semantic search
-- ✅ Corrective RAG (relevance grading + adaptive broadening)
-- ✅ Grounded answer generation
-- ✅ User-facing product demo
-- ✅ Test suite with mocked LLM clients
+- A smarter router that picks between vector, entity, and graph retrieval based on the *type* of question, instead of always querying all three
+- Better reranking of retrieved chunks before they're handed to the model
+- Multi-document summarization — e.g. "summarize every deviation report for Batch X"
+- Turning this into a proper deployed API instead of a local Streamlit demo
 
-It demonstrates both **technical depth** and **practical value** in a regulated manufacturing domain — built for a hackathon judge audience.
+## Summary
 
----
-
-## 🔮 Future Enhancements
-
-- [ ] Add a true hybrid router that ranks vector, entity, and graph evidence by query type
-- [ ] Improve retrieval scoring and reranking
-- [ ] Support multi-document summarization and traceability reporting
-- [ ] Move to a production-grade API service with deployment support
-
----
-
-<div align="center">
-
-### 📝 Summary
-
-**Meridian** is a full-stack knowledge retrieval and Q&A solution for pharmaceutical manufacturing records. It turns dispersed documentation into a structured, explainable, and searchable knowledge system with a clean demo interface.
-
-</div>
+Meridian takes scattered pharmaceutical manufacturing documents and turns them into something you can actually query — with structured facts, a visual relationship graph, semantic search, and a Corrective RAG layer that checks its own retrieval before answering instead of guessing. Built end-to-end for the Economic Times AI Hackathon.
