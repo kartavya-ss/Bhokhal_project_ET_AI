@@ -13,6 +13,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+from google.genai.errors import ServerError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "vector_embedding" / "src"))
 
@@ -82,6 +83,36 @@ def test_grade_chunk_fails_closed_to_ambiguous_on_malformed_json():
     # or silently vanish -- it should land as AMBIGUOUS so downstream logic
     # still treats it cautiously.
     assert graded.grade == Grade.AMBIGUOUS
+
+
+def test_grade_chunk_retries_server_error_then_succeeds(monkeypatch):
+    client = MagicMock()
+    server_error = ServerError(503, {"error": {"message": "temporarily unavailable"}})
+    client.models.generate_content.side_effect = [
+        server_error,
+        server_error,
+        MagicMock(text=json.dumps({"grade": "CORRECT", "reason": "mock reason"})),
+    ]
+    monkeypatch.setattr("crag.time.sleep", lambda _: None)
+
+    graded = grade_chunk("q", make_chunk("c1", "text"), LLMGraderClient(client=client))
+
+    assert graded.grade == Grade.CORRECT
+    assert client.models.generate_content.call_count == 3
+
+
+def test_grade_chunk_returns_ambiguous_when_server_remains_unavailable(monkeypatch):
+    client = MagicMock()
+    client.models.generate_content.side_effect = ServerError(
+        503, {"error": {"message": "temporarily unavailable"}}
+    )
+    monkeypatch.setattr("crag.time.sleep", lambda _: None)
+
+    graded = grade_chunk("q", make_chunk("c1", "text"), LLMGraderClient(client=client))
+
+    assert graded.grade == Grade.AMBIGUOUS
+    assert "unavailable" in graded.reason
+    assert client.models.generate_content.call_count == 3
 
 
 # ---------------------------------------------------------------------------

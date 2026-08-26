@@ -2,6 +2,7 @@ import importlib
 import json
 import sys
 import types
+from pathlib import Path
 from unittest.mock import MagicMock
 
 
@@ -25,7 +26,8 @@ def load_generate_answer(monkeypatch):
     monkeypatch.setitem(sys.modules, "google.genai", fake_genai)
     monkeypatch.setitem(sys.modules, "google.genai.types", fake_types)
 
-    sys.path.insert(0, str(__file__).replace("\\tests\\test_generate_answer_integration.py", "\\vector_embedding\\src"))
+    vector_src = Path(__file__).resolve().parents[1] / "vector_embedding" / "src"
+    sys.path.insert(0, str(vector_src))
     sys.modules.pop("generate_answer", None)
     return importlib.import_module("generate_answer")
 

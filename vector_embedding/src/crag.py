@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Callable, Optional
@@ -42,6 +43,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GRADER_MODEL = "gemini-flash-latest"
+MAX_RETRIES = 3
 
 # A chunk counts as "enough to answer from" once at least this fraction of
 # graded chunks come back CORRECT. Below that, we broaden instead of guessing.
@@ -100,16 +102,38 @@ class LLMGraderClient:
             )
         from google.genai import types
 
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=f'QUESTION: {question}\n\nCHUNK:\n"""\n{chunk_text}\n"""',
-            config=types.GenerateContentConfig(
+        request = {
+            "model": self.model,
+            "contents": f'QUESTION: {question}\n\nCHUNK:\n"""\n{chunk_text}\n"""',
+            "config": types.GenerateContentConfig(
                 system_instruction=GRADER_SYSTEM_PROMPT,
                 response_mime_type="application/json",
                 temperature=0,
             ),
-        )
-        return resp.text.strip()
+        }
+        for attempt in range(MAX_RETRIES):
+            try:
+                return self.client.models.generate_content(**request).text.strip()
+            except Exception as exc:
+                if not _is_transient_error(exc) or attempt == MAX_RETRIES - 1:
+                    if _is_transient_error(exc):
+                        return json.dumps({
+                            "grade": Grade.AMBIGUOUS.value,
+                            "reason": "grader unavailable after retries",
+                        })
+                    raise
+                time.sleep(2**attempt)
+
+
+def _is_transient_error(error: Exception) -> bool:
+    status_code = getattr(error, "status_code", None) or getattr(error, "code", None)
+    if isinstance(status_code, int) and (status_code == 429 or status_code >= 500):
+        return True
+    try:
+        from google.genai.errors import ServerError
+    except ImportError:
+        return False
+    return isinstance(error, ServerError)
 
 
 @dataclass

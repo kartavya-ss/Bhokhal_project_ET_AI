@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import time
 from pathlib import Path
 
 import chromadb
@@ -33,6 +34,7 @@ chroma_client = chromadb.PersistentClient(path=str(CHROMA_DB_PATH))
 collection = chroma_client.get_collection(name=COLLECTION_NAME)
 api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key) if api_key else None
+ANSWER_UNAVAILABLE = "Sorry, the AI service is temporarily unavailable. Please try again in a moment."
 
 
 def retrieve_vector_chunks(question, top_k=5):
@@ -199,10 +201,26 @@ def answer_with_sources(question, top_k=5, use_crag=True):
     context_text = build_context_text(question, vector_chunks, entity_rows, graph_rows)
 
     prompt = build_prompt(question, context_text)
-    response = client.models.generate_content(
-        model="gemini-flash-latest",
-        contents=prompt,
-    )
+    try:
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-flash-latest",
+                    contents=prompt,
+                )
+                break
+            except Exception:
+                if attempt == 2:
+                    raise
+                time.sleep(2**attempt)
+    except Exception:
+        return {
+            "answer": ANSWER_UNAVAILABLE,
+            "vector_chunks": vector_chunks,
+            "entity_rows": entity_rows,
+            "graph_rows": graph_rows,
+            "crag_action": result.action if use_crag else None,
+        }
 
     return {
         "answer": response.text,
