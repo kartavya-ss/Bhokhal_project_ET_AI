@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from google import genai
 from sentence_transformers import SentenceTransformer
 
-from crag import LLMGraderClient, corrective_retrieve
+from crag import LLMGraderClient, _is_transient_error, corrective_retrieve
 
 load_dotenv()
 
@@ -209,8 +209,8 @@ def answer_with_sources(question, top_k=5, use_crag=True):
                     contents=prompt,
                 )
                 break
-            except Exception:
-                if attempt == 2:
+            except Exception as exc:
+                if not _is_transient_error(exc) or attempt == 2:
                     raise
                 time.sleep(2**attempt)
     except Exception:
