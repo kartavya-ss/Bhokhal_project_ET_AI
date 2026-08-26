@@ -3,9 +3,7 @@ streamlit_app.py
 Meridian — pharma manufacturing knowledge management UI.
 
 Four tabs:
-    1. Ask a Question   — Q&A grounded in the entity store (SQL-only today;
-                           built so the hybrid router can slot in later — see
-                           retrieve_context()).
+    1. Ask a Question   — Q&A grounded in the hybrid retrieval pipeline.
     2. Knowledge Graph   — interactive pyvis graph embedded in-app.
     3. Entity Explorer   — browse/search materials, operators, SOPs, etc.
     4. Document Library  — every ingested document with its category tag.
@@ -17,17 +15,20 @@ Run:
 import json
 import os
 import sqlite3
+import sys
 from pathlib import Path
 
 import streamlit as st
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
 from pyvis.network import Network
 
 load_dotenv()
 
 DEFAULT_DB_PATH = str(Path(__file__).resolve().parent.parent / "entity_extraction" / "output" / "meridian.db")
+VECTOR_SRC = Path(__file__).resolve().parent.parent / "vector_embedding" / "src"
+if str(VECTOR_SRC) not in sys.path:
+    sys.path.insert(0, str(VECTOR_SRC))
+from generate_answer import answer_with_sources  # noqa: E402
 
 st.set_page_config(page_title="Meridian", page_icon="🧪", layout="wide")
 
@@ -81,89 +82,7 @@ def db_exists(db_path: str) -> bool:
     return Path(db_path).exists()
 
 
-# ---------------------------------------------------------------------------
-# Tab 1 — Ask a Question
-# ---------------------------------------------------------------------------
-
-STOPWORDS = {
-    "what", "which", "when", "where", "does", "did", "the", "and", "for",
-    "with", "was", "were", "have", "has", "this", "that", "used", "how",
-    "many", "much", "are", "you", "tell", "about", "show", "list",
-}
-
-
-def extract_keywords(question: str) -> list[str]:
-    words = [w.strip("?.,!:;\"'()").lower() for w in question.split()]
-    return [w for w in words if len(w) >= 4 and w not in STOPWORDS] or [question]
-
-
-def retrieve_context(question: str, db_path: str, top_k: int = 12) -> list[dict]:
-    """
-    Interim retrieval: keyword match against entity names + mention context
-    in the SQL store. This is the seam where the hybrid router plugs in —
-    once vector retrieval exists, this function is what gets replaced/extended
-    to also pull semantic matches from Chroma and merge the two result sets.
-    """
-    keywords = extract_keywords(question)
-    conn = get_conn(db_path)
-
-    clauses = " OR ".join(["e.entity_name LIKE ? OR em.context_snippet LIKE ?"] * len(keywords))
-    params = []
-    for kw in keywords:
-        params.extend([f"%{kw}%", f"%{kw}%"])
-
-    rows = conn.execute(
-        f"""
-        SELECT em.document_id, em.chunk_id, em.page, em.context_snippet,
-               e.entity_name, e.entity_type, e.entity_code, em.attributes_json
-        FROM entity_mentions em
-        JOIN entities e ON e.entity_id = em.entity_id
-        WHERE {clauses}
-        LIMIT ?
-        """,
-        (*params, top_k),
-    ).fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
-
-
-def generate_answer(question: str, context_rows: list[dict]) -> str:
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return "⚠️ GEMINI_API_KEY not set — add it to your .env file to enable answers."
-
-    if not context_rows:
-        return "I couldn't find anything in the knowledge store related to that question."
-
-    context_text = "\n".join(
-        f"- [{r['document_id']} / {r['chunk_id']} / page {r['page']}] "
-        f"{r['entity_type']}: {r['entity_name']}"
-        + (f" ({r['entity_code']})" if r["entity_code"] else "")
-        + (f" — context: {r['context_snippet']}" if r["context_snippet"] else "")
-        for r in context_rows
-    )
-
-    client = genai.Client(api_key=api_key)
-    system_prompt = (
-        "You answer questions about pharmaceutical manufacturing records using ONLY "
-        "the structured entity data provided below. Cite the document_id and chunk_id "
-        "for every claim. If the context doesn't contain the answer, say so directly — "
-        "never guess or use outside knowledge."
-    )
-    resp = client.models.generate_content(
-        model="gemini-flash-latest",
-        contents=f"Context:\n{context_text}\n\nQuestion: {question}",
-        config=types.GenerateContentConfig(system_instruction=system_prompt, temperature=0.2),
-    )
-    return resp.text
-
-
 def render_ask_tab(db_path: str):
-    st.caption(
-        "Grounded in the SQL entity store. This will route through the hybrid "
-        "vector+SQL retriever once the vector store lands — see `retrieve_context()`."
-    )
-
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
@@ -171,12 +90,13 @@ def render_ask_tab(db_path: str):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("sources"):
-                with st.expander(f"Sources ({len(msg['sources'])})"):
-                    for s in msg["sources"]:
-                        st.markdown(
-                            f"**{s['entity_type']}**: {s['entity_name']} "
-                            f"— `{s['document_id']}` / `{s['chunk_id']}` (page {s['page']})"
-                        )
+                with st.expander("Sources"):
+                    for source_type, sources in msg["sources"].items():
+                        st.markdown(f"**{source_type.title()}**")
+                        for source in sources:
+                            st.json(source)
+            if msg.get("crag_action"):
+                st.caption(f"CRAG: {msg['crag_action']}")
 
     question = st.chat_input("Ask about materials, SOPs, operators, batches...")
     if question:
@@ -186,19 +106,34 @@ def render_ask_tab(db_path: str):
 
         with st.chat_message("assistant"):
             with st.spinner("Searching the knowledge store..."):
-                context_rows = retrieve_context(question, db_path)
-                answer = generate_answer(question, context_rows)
+                result = answer_with_sources(question)
+                answer = result["answer"]
             st.markdown(answer)
-            if context_rows:
-                with st.expander(f"Sources ({len(context_rows)})"):
-                    for r in context_rows:
-                        st.markdown(
-                            f"**{r['entity_type']}**: {r['entity_name']} "
-                            f"— `{r['document_id']}` / `{r['chunk_id']}` (page {r['page']})"
-                        )
+            with st.expander("Sources"):
+                for source_type, sources in {
+                    "vector": result["vector_chunks"],
+                    "entity": result["entity_rows"],
+                    "graph": result["graph_rows"],
+                }.items():
+                    st.markdown(f"**{source_type.title()}**")
+                    if sources:
+                        for source in sources:
+                            st.json(source)
+                    else:
+                        st.caption("No sources")
+            st.caption(f"CRAG: {result['crag_action']}")
 
         st.session_state.chat_history.append(
-            {"role": "assistant", "content": answer, "sources": context_rows}
+            {
+                "role": "assistant",
+                "content": answer,
+                "sources": {
+                    "vector": result["vector_chunks"],
+                    "entity": result["entity_rows"],
+                    "graph": result["graph_rows"],
+                },
+                "crag_action": result["crag_action"],
+            }
         )
 
 
